@@ -1,4 +1,4 @@
-package configs;
+package com.api.parkingcontrol.configs;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
