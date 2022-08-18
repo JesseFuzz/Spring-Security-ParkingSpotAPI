@@ -1,10 +1,14 @@
 package com.api.parkingcontrol.configs.security;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration //classe de configuration do Spring
 //@EnableWebSecurity //uso essa anotação pra que as configurações default do Spring não atrapalhem as minhas configurações, é como se eu zerasse as configs do SpringSecurit
@@ -26,8 +30,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter { //classe d
     protected void configure(AuthenticationManagerBuilder auth) throws Exception{
         auth.inMemoryAuthentication() //será em memória
                 .withUser("jesse") //passo um usuário
-                .password("12345") //passo uma senha
+//                .password("12345") //passo uma senha
+                .password(passwordEncoder().encode("12345")) //essa mudança foi fornecida pelo metodo encoder abaixo. estava com o erro 500
                 .roles("ADMIN"); //passo uma role ou papel e.g. "ADMIN USER", "ADMIN USER STUDENT" é preciso definir pois senão o java manda um null pointer exception
-                //depois dessas configs o Spring Security não gera mais uma password
+                  //depois dessas configs o Spring Security não gera mais uma password
+    }
+
+    @Bean //criei esse método para que eu possa codificar minha senha pois o java estava retornando java.lang.IllegalArgumentException: There is no PasswordEncoder mapped for the id "null"
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 }
