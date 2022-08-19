@@ -10,7 +10,9 @@ import java.util.UUID;
 import javax.persistence.Id;
 import javax.validation.Valid;
 
+import com.sun.xml.bind.v2.runtime.output.SAXOutput;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -66,7 +68,11 @@ public class ParkingSpotController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<Page<ParkingSpotModel>> getAllParkingSpots(@PageableDefault(page=0, size=10, sort="id", direction=Sort.Direction.ASC) org.springframework.data.domain.Pageable pageable){
+	@Cacheable("GetAll") //estou dizendo para o Spring que esse é um método cacheável. Adicionei a dependencia, anotei a classe principal e agora anotei esse método
+	public ResponseEntity<Page<ParkingSpotModel>> getAllParkingSpots(@PageableDefault(page=0, size=10, sort="id", direction=Sort.Direction.ASC) org.springframework.data.domain.Pageable pageable) throws InterruptedException {
+		System.out.println("teste de Cache");
+
+		Thread.sleep(10000); //aumentando o tempo do retorno dessa requisição em 5s, para simular o processo lento. Isso pede uma exceção.
 		return ResponseEntity.status(HttpStatus.OK).body(parkingSpotService.findAll(pageable)); //ñ passei msg  no body pois caso não tenha irá retornar uma lista vazia
 	}
 	
