@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.api.parkingcontrol.dto.ParkingSpotDto;
 import com.api.parkingcontrol.model.ParkingSpotModel;
 import com.api.parkingcontrol.service.ParkingSpotService;
+import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping("/parking-spot")
@@ -102,10 +103,10 @@ public class ParkingSpotController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Object> updateParkingSpot(@PathVariable(value="id") UUID id, @RequestBody @Valid ParkingSpotDto parkingSpotDto){
+	public ResponseEntity<Object> updateParkingSpot(@PathVariable(value="id") UUID id, @RequestBody @Valid ParkingSpotDto parkingSpotDto) {
 		Optional<ParkingSpotModel> parkingSpotOptional = parkingSpotService.findById(id);
 		Optional<ParkingSpotModel> parkingSpotModelOptional = null; //eu que coloquei o de cima foi Michelli e o null foi pra inicializar (ide sugeriu inicializar)
-		if(!parkingSpotModelOptional.isPresent()) {
+		if (!parkingSpotModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("essa vaga não foi encontrada!");
 		}
 		var parkingSpotModel = new ParkingSpotModel();
@@ -113,9 +114,7 @@ public class ParkingSpotController {
 		parkingSpotModel.setId(parkingSpotModelOptional.get().getId());
 		parkingSpotModel.setRegistrationDate(parkingSpotModel.get().getRegistrationDate());
 		return ResponseEntity.status(HttpStatus.OK).body(parkingSpotService.save(parkingSpotModel));
-		
-		
-		
+
 //		var parkingSpotModel parkingSpotModel = parkingSpotModelOptional.get();
 //		parkingSpotModel.setParkingSpotNumber(parkingSpotDto.getParkingSpotNumber());
 //		parkingSpotModel.setLicensePlateCar(parkingSpotDto.getLicensePlateCar());
@@ -126,5 +125,4 @@ public class ParkingSpotController {
 //		parkingSpotModel.setApartment(parkingSpotDto.getApartment());
 //		parkingSpotModel.setBlock(parkingSpotDto.getBlock());
 	}
-		
 }
